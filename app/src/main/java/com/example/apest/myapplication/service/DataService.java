@@ -10,5 +10,10 @@ public interface DataService {
 
     int getAvailableCount();
     Pet getItemAt(int position);
-    void setItem(Pet pet, int position);
+    Pet getItemById(int id);
+
+    void deleteItemById(int id);
+    void setItemById(int petId, Pet pet);
+
+    int addPet(Pet pet);
 }
