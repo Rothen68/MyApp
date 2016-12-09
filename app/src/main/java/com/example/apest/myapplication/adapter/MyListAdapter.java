@@ -14,6 +14,9 @@ import com.example.apest.myapplication.R;
 import com.example.apest.myapplication.model.Pet;
 import com.example.apest.myapplication.service.DataService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by apest on 07/12/2016.
  */
@@ -23,9 +26,39 @@ public class MyListAdapter extends BaseAdapter implements AdapterView.OnItemClic
     DataService dataService;
     Context context;
 
+
+    String searchString="";
+
+    public String getSearchString() {
+        return searchString;
+    }
+
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
+    }
+
     public MyListAdapter(Context context, DataService service) {
         this.context = context;
         this.dataService = service;
+    }
+
+    /**
+     * Filter pets names by searchString
+     * @return ArrayList with pets where pet's name contains searchString
+     */
+    private ArrayList<Pet> getSearchedList()
+    {
+        ArrayList<Pet> list = new ArrayList<>();
+
+        for (int i = 0 ; i < dataService.getAvailableCount(); i++)
+        {
+            Pet p = dataService.getItemAt(i);
+            if (p.getName().toLowerCase().contains(searchString.toLowerCase()))
+            {
+                list.add(p);
+            }
+        }
+        return list;
     }
 
     /**
@@ -35,7 +68,7 @@ public class MyListAdapter extends BaseAdapter implements AdapterView.OnItemClic
      */
     @Override
     public int getCount() {
-        return dataService.getAvailableCount();
+        return getSearchedList().size();
     }
 
     /**
@@ -47,7 +80,7 @@ public class MyListAdapter extends BaseAdapter implements AdapterView.OnItemClic
      */
     @Override
     public Object getItem(int position) {
-        return dataService.getItemAt(position);
+        return getSearchedList().get(position);
     }
 
     /**
@@ -58,7 +91,7 @@ public class MyListAdapter extends BaseAdapter implements AdapterView.OnItemClic
      */
     @Override
     public long getItemId(int position) {
-        return dataService.getItemAt(position).getId();
+        return getSearchedList().get(position).getId();
     }
 
     /**
@@ -81,7 +114,7 @@ public class MyListAdapter extends BaseAdapter implements AdapterView.OnItemClic
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Pet item = dataService.getItemAt(position);
+        Pet item = getSearchedList().get(position);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
